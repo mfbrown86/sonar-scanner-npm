@@ -11,14 +11,14 @@ module.exports.customScanner = scanUsingCustomSonarQubeScanner
 /*
  * Function used programmatically to trigger an analysis.
  */
-function scan(params, callback) {
-  scanCLI([], params, callback)
+function scan(params, callback, caFile) {
+  scanCLI([], params, callback, caFile)
 }
 
 /*
  * Function used by the '/bin/sonar-scanner' executable that accepts command line arguments.
  */
-function scanCLI(cliArgs, params, callback) {
+function scanCLI(cliArgs, params, callback, caFile) {
   log('Starting SonarQube analysis...')
 
   // prepare the exec options, most notably with the SQ params
@@ -33,7 +33,7 @@ function scanCLI(cliArgs, params, callback) {
     } catch (error) {
       process.exit(error.status)
     }
-  })
+  }, caFile)
 }
 
 /*

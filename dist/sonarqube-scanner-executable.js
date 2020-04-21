@@ -59,7 +59,7 @@ function prepareExecEnvironment(params, process) {
 /*
  * Returns the SQ Scanner executable for the current platform
  */
-function getSonarQubeScannerExecutable(passExecutableCallback) {
+function getSonarQubeScannerExecutable(passExecutableCallback, caFile) {
   const platformBinariesVersion =
     process.env.SONAR_SCANNER_VERSION || process.env.npm_config_sonar_scanner_version || SONAR_SCANNER_VERSION
   var targetOS = findTargetOS()
@@ -101,7 +101,7 @@ function getSonarQubeScannerExecutable(passExecutableCallback) {
   var downloadUrl = baseUrl + fileName
   log(`Downloading from ${downloadUrl}`)
   log(`(executable will be saved in cache folder: ${installFolder})`)
-  download(downloadUrl, installFolder, { extract: true })
+  download(downloadUrl, installFolder, { extract: true, ca: caFile })
     .on('response', res => {
       bar.total = res.headers['content-length']
       res.on('data', data => bar.tick(data.length))
