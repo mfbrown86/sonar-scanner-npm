@@ -99,9 +99,30 @@ function getSonarQubeScannerExecutable(passExecutableCallback) {
   var baseUrl = process.env.SONAR_SCANNER_MIRROR || process.env.npm_config_sonar_scanner_mirror || SONAR_SCANNER_MIRROR
   var fileName = 'sonar-scanner-cli-' + platformBinariesVersion + '-' + targetOS + '.zip'
   var downloadUrl = baseUrl + fileName
+  var downloadOptions = { extract: true }
+  // Use certificate authority settings from npm
+  var ca = process.env.npm_config_ca
+  if (!ca && process.env.npm_config_cafile) {
+    try {
+      ca = fs.readFileSync(process.env.npm_config_cafile, {encoding: 'utf8'})
+        .split(/\n(?=-----BEGIN CERTIFICATE-----)/g)
+      // Comments at the beginning of the file result in the first
+      // item not containing a certificate - in this case the
+      // download will fail
+      if (ca.length > 0 && !/-----BEGIN CERTIFICATE-----/.test(ca[0])) {
+        ca.shift()
+      }
+    } catch (e) {
+      logError('Could not read cafile', process.env.npm_config_cafile, e)
+    }
+  }
+  if (ca) {
+    log('Using npmconf ca')
+    downloadOptions.ca = ca
+  }
   log(`Downloading from ${downloadUrl}`)
   log(`(executable will be saved in cache folder: ${installFolder})`)
-  download(downloadUrl, installFolder, { extract: true })
+  download(downloadUrl, installFolder, downloadOptions)
     .on('response', res => {
       bar.total = res.headers['content-length']
       res.on('data', data => bar.tick(data.length))
