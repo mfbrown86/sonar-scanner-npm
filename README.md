@@ -60,7 +60,6 @@ sonarqubeScanner(
   * `options` *Map* (optional) Used to pass extra parameters for the SonarQube analysis. See the [official documentation](http://redirect.sonarsource.com/doc/analysis-parameters.html) for more details.
 * `callback` *Function* (optional)
 Callback (the execution of the analysis is asynchronous).
-* `caFile` *String* (optional) Path to the certificate that should be used as the trusted CA certificate when downloading the SonarQube binaries.
 
 ## Usage: run analyses on the command line
 
