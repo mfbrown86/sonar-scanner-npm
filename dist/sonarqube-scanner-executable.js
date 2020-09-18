@@ -99,10 +99,9 @@ function getSonarQubeScannerExecutable(passExecutableCallback, caFile) {
   var baseUrl = process.env.SONAR_SCANNER_MIRROR || process.env.npm_config_sonar_scanner_mirror || SONAR_SCANNER_MIRROR
   var fileName = 'sonar-scanner-cli-' + platformBinariesVersion + '-' + targetOS + '.zip'
   var downloadUrl = baseUrl + fileName
-  var ca = caFile ? fs.readFileSync(caFile) : undefined
   log(`Downloading from ${downloadUrl}`)
   log(`(executable will be saved in cache folder: ${installFolder})`)
-  download(downloadUrl, installFolder, { extract: true, ca: ca })
+  download(downloadUrl, installFolder, { extract: true, ca: caFile })
     .on('response', res => {
       bar.total = res.headers['content-length']
       res.on('data', data => bar.tick(data.length))
